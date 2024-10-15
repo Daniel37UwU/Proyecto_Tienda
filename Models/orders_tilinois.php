@@ -1,62 +1,54 @@
 <?php
-// Include the database connection file
-include 'db_conexion.php';
+class Orders
+{
+    private int $idpe;
+    private ?int $idc;
+    private string $orderDate;
+    private float $total;
 
-// Check if the form has been submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the form data
-    $idpe = $_POST['idpe'];                // Order ID
-    $idc = $_POST['idc'];                  // Customer ID
-    $orderDate = $_POST['orderdate'];      // Order date
-    $total = $_POST['total'];               // Total amount
+    public function __construct(
+        int $idpe,
+        ?int $idc,
+        string $orderDate,
+        float $total
+    ) {
+        $this->idpe = $idpe;
+        $this->idc = $idc;
+        $this->orderDate = $orderDate;
+        $this->total = $total;
+    }
 
-    // Check if all the necessary data is provided
-    if (!empty($idpe) && !empty($idc) && !empty($orderDate) && !empty($total)) {
-        // Call the function to update the order
-        $result = updateOrder($idpe, $idc, $orderDate, $total);
+    public function getIdpe(): int
+    {
+        return $this->idpe;
+    }
+    public function getIdc(): ?int
+    {
+        return $this->idc;
+    }
+    public function getOrderDate(): string
+    {
+        return $this->orderDate;
+    }
+    public function getTotal(): float
+    {
+        return $this->total;
+    }
 
-        // Check if the update was successful
-        if ($result) {
-            echo "Order successfully updated.";
-            // Redirect to the index or desired page
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "Error updating the order.";
-        }
-    } else {
-        echo "All fields are required.";
+    public function setIdpe(int $idpe): void
+    {
+        $this->idpe = $idpe;
+    }
+    public function setIdc(?int $idc): void
+    {
+        $this->idc = $idc;
+    }
+    public function setOrderDate(string $orderDate): void
+    {
+        $this->orderDate = $orderDate;
+    }
+    public function setTotal(float $total): void
+    {
+        $this->total = $total;
     }
 }
-
-// Function to update the order in the store_tilinois_db database
-function updateOrder($idpe, $idc, $orderDate, $total) {
-    global $conn; // Use the database connection from 'db_conexion.php'
-
-    // Prepare the SQL query to update the order
-    $sql = "UPDATE orders SET
-                idc = ?,
-                orderdate = ?,
-                total = ?,
-            WHERE idpe = ?";
-
-    // Prepare the statement
-    $stmt = $conn->prepare($sql);
-
-    // Check if the statement preparation was successful
-    if ($stmt) {
-        // Bind the parameters
-        $stmt->bind_param("isdi", $idc, $orderDate, $total, $idpe);
-
-        // Execute the query
-        if ($stmt->execute()) {
-            return true; // Update was successful
-        } else {
-            return false; // Error executing the query
-        }
-    } else {
-        return false; // Error preparing the query
-    }
-}
-?>
-

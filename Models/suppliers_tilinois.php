@@ -1,86 +1,57 @@
 <?php
-// Include the database connection file
-include 'db_conexion.php';
+class Suppliers
+{
+    private int $idprov;
+    private string $name;
+    private ?string $phone;
+    private ?string $address;
 
-// Function to add a new supplier
-function addSupplier($name, $phone, $address) {
-    global $conn;
-    $sql = "INSERT INTO suppliers (name, phone, address) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $name, $phone, $address);
-    return $stmt->execute();
-}
+    public function __construct(
+        int $idprov,
+        string $name,
+        ?string $phone = null,
+        ?string $address = null
+    ) {
+        $this->idprov = $idprov;
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->address = $address;
+    }
 
-// Function to update an existing supplier
-function updateSupplier($idprov, $name, $phone, $address) {
-    global $conn;
-    $sql = "UPDATE suppliers SET name = ?, phone = ?, address = ? WHERE idprov = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssi", $name, $phone, $address, $idprov);
-    return $stmt->execute();
-}
+    public function getIdprov(): int
+    {
+        return $this->idprov;
+    }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
 
-// Function to delete a supplier
-function deleteSupplier($idprov) {
-    global $conn;
-    $sql = "DELETE FROM suppliers WHERE idprov = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $idprov);
-    return $stmt->execute();
-}
+    public function setIdprov(int $idprov): void
+    {
+        $this->idprov = $idprov;
+    }
 
-// Function to search for a supplier by ID
-function searchSupplier($idprov) {
-    global $conn;
-    $sql = "SELECT * FROM suppliers WHERE idprov = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $idprov);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
-}
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
 
-// Check if the form has been submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
-    $idprov = $_POST['idprov'] ?? null;
-    $name = $_POST['name'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
+    public function setPhone(?string $phone): void
+    {
+        $this->phone = $phone;
+    }
 
-    // Check which operation to perform
-    if (isset($_POST['add'])) {
-        // Add supplier
-        if (addSupplier($name, $phone, $address)) {
-            echo "Supplier added successfully.";
-            header("Location: suppliers_tilinois.php");
-            exit();
-        } else {
-            echo "Error adding supplier.";
-        }
-    } elseif (isset($_POST['update'])) {
-        // Update supplier
-        if ($idprov && updateSupplier($idprov, $name, $phone, $address)) {
-            echo "Supplier updated successfully.";
-            header("Location: suppliers_tilinois.php");
-            exit();
-        } else {
-            echo "Error updating supplier.";
-        }
-    } elseif (isset($_POST['delete'])) {
-        // Delete supplier
-        if ($idprov && deleteSupplier($idprov)) {
-            echo "Supplier deleted successfully.";
-            header("Location: suppliers_tilinois.php");
-            exit();
-        } else {
-            echo "Error deleting supplier.";
-        }
+    public function setAddress(?string $address): void
+    {
+        $this->address = $address;
     }
 }
-
-// Example of retrieving a supplier for editing
-$supplier = null;
-if (isset($_GET['idprov'])) {
-    $supplier = searchSupplier($_GET['idprov']);
-}
-?>

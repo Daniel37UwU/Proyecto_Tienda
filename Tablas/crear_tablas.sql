@@ -9,10 +9,10 @@ CREATE TABLE IF NOT EXISTS products (
     idpro INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(255),
-    price DOUBLE NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
     category VARCHAR(50),
     brand VARCHAR(50),
-    stockunits INT NOT NULL
+    stockUnits INT NOT NULL
 );  
 
 -- Customers Table
@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS customers (
     idc INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    address VARCHAR(255) NULL,
-    phone VARCHAR(50) NULL,
-    email VARCHAR(100) NULL
+    address VARCHAR(255),
+    phone VARCHAR(50),
+    email VARCHAR(100) UNIQUE
 );
 
 -- Orders Table (with relation to Customers)
@@ -30,19 +30,19 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS orders (
     idpe INT AUTO_INCREMENT PRIMARY KEY,
     idc INT,
-    orderdate DATE NOT NULL,
-    total DOUBLE NOT NULL,
+    orderDate DATE NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (idc) REFERENCES customers(idc) ON DELETE SET NULL
 );
 
 -- OrderDetails Table (relationship between Orders and Products)
 -- Tabla de detalles del pedido (relación entre pedidos y productos)
-CREATE TABLE IF NOT EXISTS orderdetails (
-    iddetail INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS orderDetails (
+    iddet INT AUTO_INCREMENT PRIMARY KEY,
     idpe INT,
     idpro INT,
     quantity INT NOT NULL,
-    price DOUBLE NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (idpe) REFERENCES orders(idpe) ON DELETE CASCADE,
     FOREIGN KEY (idpro) REFERENCES products(idpro) ON DELETE CASCADE
 );
@@ -61,6 +61,6 @@ CREATE TABLE IF NOT EXISTS employees (
 CREATE TABLE IF NOT EXISTS suppliers (
     idprov INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    phone VARCHAR(50) NULL,
-    address VARCHAR(255) NULL
+    phone VARCHAR(50),
+    address VARCHAR(255)
 );

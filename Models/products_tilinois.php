@@ -1,67 +1,87 @@
-clude the database connection file
-include 'db_conexion.php';
+<?php
+class Products
+{
+    private int $idpro;
+    private string $name;
+    private string $description;
+    private float $price;
+    private string $category;
+    private string $brand;
+    private int $stockUnits;
 
-// Check if the form has been submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the form data
-    $idpro = $_POST['idpro'];              // Product ID
-    $name = $_POST['name'];                // Product name
-    $description = $_POST['description'];  // Product description
-    $price = $_POST['price'];              // Product price
-    $category = $_POST['category'];        // Product category
-    $brand = $_POST['brand'];              // Product brand
-    $stock = $_POST['uniStock'];           // Units in stock
-
-    // Check if all the necessary data is provided
-    if (!empty($idpro) && !empty($name) && !empty($description) && !empty($price) && !empty($category) && !empty($brand) && !empty($stock)) {
-        // Call the function to update the product
-        $result = updateProduct($idpro, $name, $description, $price, $category, $brand, $stock);
-
-        // Check if the update was successful
-        if ($result) {
-            echo "Product successfully updated.";
-            // Redirect to the index or desired page
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "Error updating the product.";
+    public function __construct(
+        int $idpro,
+        string $name,
+        string $description,
+        float $price,
+        string $category,
+        string $brand,
+        int $stockUnits)
+    {
+        $this->idpro = $idpro;
+        $this->name = $name;
+        $this->description = $description;
+        $this->price = $price;
+        $this->category = $category;
+        $this->brand = $brand;
+        $this->stockUnits = $stockUnits;
         }
-    } else {
-        echo "All fields are required.";
+
+    public function getIdpro(): int
+    {   
+        return $this->idpro;
+    }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
+    public function getBrand(): string
+    {
+        return $this->brand;
+    }
+    public function getStockUnits(): int
+    {
+        return $this->stockUnits;
+    }
+
+    public function setIdpro (int $idpro): void
+    {
+        $this->idpro = $idpro;
+    }
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
+    }
+    public function setCategory(string $category): void
+    {
+        $this->category = $category;
+    }
+    public function setBrand(string $brand): void
+    {
+        $this->brand = $brand;
+    }
+    public function setStockUnits(int $stockUnits): void
+    {
+        $this->stockUnits = $stockUnits;
     }
 }
-
-// Function to update the product in the store_tilinois_db database
-function updateProduct($idpro, $name, $description, $price, $category, $brand, $stock) {
-    global $conn; // Use the database connection from 'db_conexion.php'
-
-    // Prepare the SQL query to update the product
-    $sql = "UPDATE products SET
-                name = ?,
-                description = ?,
-                price = ?,
-                category = ?,
-                brand = ?,
-                uniStock = ?
-            WHERE idpro = ?";
-
-    // Prepare the statement
-    $stmt = $conn->prepare($sql);
-
-    // Check if the statement preparation was successful
-    if ($stmt) {
-        // Bind the parameters
-        $stmt->bind_param("ssdsdii", $name, $description, $price, $category, $brand, $stock, $idpro);
-
-        // Execute the query
-        if ($stmt->execute()) {
-            return true; // Update was successful
-        } else {
-            return false; // Error executing the query
-        }
-    } else {
-        return false; // Error preparing the query
-    }
-}
-?>
-
